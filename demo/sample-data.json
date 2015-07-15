@@ -1,0 +1,19 @@
+{
+  "contactData": {
+    "firstname": "David",
+    "lastname": "Rolfson"
+  },
+  "details": {
+    "email": "david.rolfson@invalid.org",
+    "addresses": [
+      {
+        "zip": "3448",
+        "city": "Lakin Manor"
+      },
+      {
+        "zip": "7627",
+        "city": "Morgan Grove"
+      }
+    ]
+  }
+}

@@ -1,0 +1,188 @@
+<!doctype html>
+
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <title>estos-databinding Demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="test-element.html">
+
+</head>
+
+<body>
+
+  <template is="dom-bind">
+
+
+    <test-element id="e1"></test-element>
+    <test-element id="e2"></test-element>
+
+
+    <!-- Test buttons -->
+
+    <hr>
+
+    <h2>Databinding tests for above elements</h2>
+
+    <h4>Choose an element</h4>
+
+    <select id="elementSelect">
+      <option value="e1">Element 1</option>
+      <option value="e2">Element 2</option>
+    </select>
+
+    <h4>Test properties</h4>
+
+    <button on-click="changeContactObject">Change contact</button>
+    <button on-click="changeContactDetailsObject">Change contact.details</button>
+    <button on-click="changeEmail">Change contact.details.email</button>
+    <button on-click="changeContactDetailsToNull">Set contact.details to null</button>
+
+    <h4>Test collections</h4>
+
+    <input type="number" id="collectionEntryToAdd" placeholder="Index of new address">
+    <button on-click="addAddress">Add address</button>
+
+    <input type="number" id="collectionEntryToRemove" placeholder="Index of address to remove">
+    <button on-click="removeAddress">Remove address</button>
+
+    <button on-click="resetCollection">Reset addresses</button>
+
+    <h4>Test memory</h4>
+
+    <button on-click="memoryObjectTest">Memory test (change contact)</button>
+    <button on-click="memoryElementTest">Memory test (change element)</button>
+
+  </template>
+
+
+
+  <script>
+
+    var scope = document.querySelector('template[is="dom-bind"]');
+    var models = {};
+
+    // Helper functions for demo
+    scope._generateAddress = function() {
+      var random = new Date().getMilliseconds();
+
+      return {
+        zip: 'zip' + random,
+        city: 'city-' + random
+      };
+    };
+
+    scope._generateContact = function() {
+      var random = new Date().getMilliseconds();
+      var contact = {
+        firstname: 'First' + random,
+        lastname: 'Last' + random,
+        details: {
+          email: 'email' + random,
+          addresses: []
+        }
+      };
+
+      contact.details.addresses.push(this._generateAddress());
+      contact.details.addresses.push(this._generateAddress());
+
+      return contact;
+    };
+
+    scope.changeContactObject = function() {
+      var selected = document.querySelector('#elementSelect').value;
+      var element = document.querySelector('#' + selected);
+
+      models[selected] = this._generateContact();
+
+      element.contact = models[selected];
+    };
+
+    scope.changeContactDetailsObject = function() {
+      var random = new Date().getMilliseconds();
+      var selected = document.querySelector('#elementSelect').value;
+
+      models[selected].details = {
+        email: 'email' + random
+      };
+    };
+
+    scope.changeEmail = function() {
+      var random = new Date().getMilliseconds();
+      var selected = document.querySelector('#elementSelect').value;
+
+      models[selected].details.email = 'email' + random;
+    };
+
+    scope.changeContactDetailsToNull = function() {
+      var random = new Date().getMilliseconds();
+      var selected = document.querySelector('#elementSelect').value;
+
+      models[selected].details = null;
+    };
+
+    scope.addAddress = function() {
+      var index = parseInt(this.$.collectionEntryToAdd.value, 10);
+      var selected = document.querySelector('#elementSelect').value;
+
+      models[selected].details.addresses.splice(index, 0, this._generateAddress());
+    };
+
+    scope.removeAddress = function() {
+      var index = parseInt(this.$.collectionEntryToRemove.value, 10);
+      var selected = document.querySelector('#elementSelect').value;
+
+      models[selected].details.addresses.splice(index, 1);
+    };
+
+    scope.memoryObjectTest = function(counter) {
+      this.changeContactObject();
+
+      counter = (isNaN(counter))? 0 : counter;
+
+      if (counter < 1000) {
+        setTimeout(function() {
+          this.memoryObjectTest(++counter);
+        }.bind(this));
+      }
+    };
+
+    scope.memoryElementTest = function(counter) {
+      var selected = document.querySelector('#elementSelect').value;
+      var element = document.querySelector('#' + selected);
+      var parent = element.parentNode;
+
+      parent.removeChild(element);
+
+      var newElement = document.createElement('test-element');
+      newElement.setAttribute('id', selected);
+
+      parent.appendChild(newElement);
+
+      this.changeContactObject();
+
+      counter = (isNaN(counter))? 0 : counter;
+
+      if (counter < 100) {
+        setTimeout(function() {
+          this.memoryElementTest(++counter);
+        }.bind(this));
+      }
+    };
+
+  </script>
+
+</dom-module>
+
+
+
+
+</body>
+</html>

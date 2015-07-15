@@ -1,0 +1,187 @@
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../observe-js/observe-js.html">
+
+<script>
+
+/**
+`EstosBehaviors.EstosDataBindinghavior` synchronize changes in POJOs to Polymer properties.
+
+To enable binding for an element you have to add this behavior and specify which properties
+should be bound. For example:
+
+  Polymer({
+  is: 'test-element',
+
+  behaviors: [
+    EstosBehaviors.EstosDataBindingBehavior
+  ],
+
+  properties: {
+    contact: {
+      type: Object,
+      boundProperties: [
+        'firstname',
+        'details.email',
+        'details.addresses'
+      ]
+    }
+  }
+
+
+The behavior will listen to all paths defined in ```boundProperties``` and will notify your
+Polymer element of any updates. For example this template will be in sync with your POJOs regardless
+how they are changed:
+
+
+  <h1>[[contact.firstname]]</div>
+
+  <template is="dom-repeat" items="[[contact.details.addresses]]">
+    <div>[[item.street]]</div>
+  </template>
+
+
+@demo demo/index.html
+@polymerBehavior
+*/
+
+  (function() {
+
+    // TODO: Make this optional and configurable
+    var dirtyCheck = function dirtyCheck (timeout) {
+      setTimeout(function() {
+        Platform.performMicrotaskCheckpoint();
+        dirtyCheck(timeout);
+      }, timeout);
+    };
+
+    if (!Object.observe) {
+      dirtyCheck(300);
+    }
+
+    window.EstosBehaviors = window.EstosBehaviors || {};
+    window.EstosBehaviors.EstosDataBindingBehavior = {
+
+      properties: {
+        __boundPathObservers: {
+          type: Array,
+          value: function() { return []; }
+        },
+
+        __boundArrayObservers: {
+          type: Object,
+          value: function() { return {}; }
+        },
+
+        _isDebugEnabled: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+      /**
+       * Searches for bound properties in this element and will install the required observers.
+       */
+      attached: function() {
+        for (var property in this.properties) {
+          var propertyInfo = this.getPropertyInfo(property);
+
+          if (Array.isArray(propertyInfo.boundProperties)) {
+
+            propertyInfo.boundProperties.forEach(function(subPath){
+              var path =  property + '.' + subPath;
+
+              this._bindingDebug('adding path observer for ', path, this.__data__);
+
+              var observer = new PathObserver(this, '__data__.' + path);
+              observer.open(this._boundPathChanged.bind(this, path));
+
+              this.__boundPathObservers.push(observer);
+
+            }.bind(this));
+          }
+        }
+      },
+
+      /**
+       * Unregisters all installed observers.
+       */
+      detached: function() {
+        this.__boundPathObservers.forEach(function(observer) {
+          this._bindingDebug('removing path observer for ', observer.path_.toString());
+          observer.close();
+        }.bind(this));
+
+        for (var path in this.__boundArrayObservers) {
+          this._bindingDebug('removing array observer for ', path);
+          this.__boundArrayObservers[path].close()
+        }
+
+        this.__boundPathObservers = [];
+        this.__boundArrayObservers = {};
+      },
+
+      /**
+       * Will be called if a bound property or the path of the property has changed and
+       * will notify the polymer element about the new value.
+       *
+       * If the new value is an array it will install a new ArrayObserver on it.
+       *
+       * @param path
+       * @param newValue
+       * @private
+       */
+      _boundPathChanged: function(path, newValue) {
+        this._bindingDebug('value changed for ', path);
+
+        // If the path represents an array, register an ArrayObserver
+        if (this.__boundArrayObservers[path]) {
+          this._bindingDebug('removing array observer for ', path);
+
+          this.__boundArrayObservers[path].close();
+          delete this.__boundArrayObservers[path];
+        }
+
+        if (Array.isArray(newValue)) {
+          this._bindingDebug('adding array observer for ', path);
+
+          observer = new ArrayObserver(newValue);
+          observer.open(this._boundArrayChanged.bind(this, path));
+
+          this.__boundArrayObservers[path] = observer;
+        }
+
+        // Notify changes
+        this.notifyPath(path, newValue);
+      },
+
+      /**
+       * Callback for changes in an array's structure (adding or removing an item).
+       * which will notify the element about the changes.
+       *
+       * @param path
+       * @param splices
+       * @private
+       */
+      _boundArrayChanged: function(path, splices) {
+        this._bindingDebug('array changed ', path);
+
+        var array = this.get(path);
+
+        splices.forEach(function(splice) {
+          this._notifySplice(array, path, splice.index, splice.addedCount, splice.removed);
+        }.bind(this));
+      },
+
+      _bindingDebug: function() {
+        if (this._isDebugEnabled) {
+          arguments[0] = 'EstosDataBindingBehavior: ' + arguments[0];
+          console.debug.apply(console, arguments);
+        }
+      }
+
+    };
+
+  }());
+
+</script>

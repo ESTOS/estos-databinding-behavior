@@ -1,0 +1,62 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../estos-databinding-behavior.html">
+
+<dom-module id="test-element">
+
+  <style>
+
+  </style>
+
+  <template>
+
+    <h3>Element <span>[[id]]</span></h3>
+
+      <u>Properties</u>
+
+      <div>contact.firstname: <span>[[contact.firstname]]</span></div>
+      <div>contact.lastname: <span>[[contact.lastname]]</span></div>
+      <div>contact.details.email: <span>[[contact.details.email]]</span></div>
+
+      <br>
+
+      <u>Collections</u>
+
+      <div>
+        contact.details.addresses:
+
+        <template is="dom-repeat" items="[[contact.details.addresses]]">
+          <br> <em>Index <span>[[index]]</span></em>: <span>[[item.zip]]</span> - <span>[[item.city]]</span>
+        </template>
+      </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'test-element',
+
+      behaviors: [
+        EstosBehaviors.EstosDataBindingBehavior
+      ],
+
+      properties: {
+        id: String,
+
+        contact: {
+          type: Object,
+          boundProperties: [
+            'firstname',
+            'lastname',
+            'details.email',
+            'details.addresses'
+          ]
+        }
+      }
+
+    });
+
+  </script>
+
+</dom-module>

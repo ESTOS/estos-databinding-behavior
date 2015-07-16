@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "description": "Synchronizes data in third party libraries models to Polymer properties",
-  "private": true,
+  "private": false,
   "main": [
     "estos-databinding-behavior.html"
   ],

@@ -149,11 +149,6 @@ how they are changed:
           observer.open(this._boundArrayChanged.bind(this, path));
 
           this.__boundArrayObservers[path] = observer;
-
-          // Notify about any existing elements
-          if (newValue.length > 0) {
-            this._boundArrayChanged(path, [{ index: 0, addedCount: newValue.length, removed: 0 }]);
-          }
         }
 
         // Notify changes

@@ -169,8 +169,11 @@ how they are changed:
         var array = this.get(path);
 
         splices.forEach(function(splice) {
-          this._notifySplice(array, path, splice.index, splice.addedCount, splice.removed);
-        }.bind(this));
+          splice.object = array;
+          splice.type = 'splice';
+        });
+
+        this.notifySplices(path, splices);
       },
 
       _bindingDebug: function() {

@@ -1,6 +1,6 @@
 # estos-databinding-behavior
 
-Synchronizes changes in POJOs to Polymer properties. 
+Synchronizes changes in POJOs to Polymer properties. The databinding is comparable to Polymer 0.5. 
 
 ## Usage
 

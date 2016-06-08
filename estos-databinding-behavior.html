@@ -47,16 +47,8 @@ how they are changed:
 
   (function() {
 
-    // TODO: Make this optional and configurable
-    var dirtyCheck = function dirtyCheck (timeout) {
-      setTimeout(function() {
-        Platform.performMicrotaskCheckpoint();
-        dirtyCheck(timeout);
-      }, timeout);
-    };
-
     if (!Object.observe) {
-      dirtyCheck(300);
+      setInterval(Platform.performMicrotaskCheckpoint, 300);
     }
 
     window.EstosBehaviors = window.EstosBehaviors || {};

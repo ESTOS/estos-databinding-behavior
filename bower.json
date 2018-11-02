@@ -1,6 +1,6 @@
 {
   "name": "estos-databinding-behavior",
-  "version": "0.0.5",
+  "version": "2.0.1",
   "license": "MIT",
   "description": "Synchronizes changes in POJOs to Polymer properties. The databinding is comparable to Polymer 0.5.",
   "private": false,
@@ -20,16 +20,10 @@
     "url": "git://github.com/ESTOS/estos-databinding-behavior.git"
   },
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.2.1",
+    "polymer": "^2.0.0",
     "observe-js": "~0.5.6"
   },
   "devDependencies": {
-    "paper-styles": "polymerelements/paper-styles#^1.0.13",
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
-    "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
-    "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-    "web-component-tester": "*",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.2.7"
   }
 }

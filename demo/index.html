@@ -9,7 +9,7 @@
 
   <title>estos-databinding Demo</title>
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
 
   <link rel="import" href="../../polymer/polymer.html">
   <link rel="import" href="test-element.html">
@@ -18,7 +18,6 @@
 
 <body>
 
-  <template is="dom-bind">
 
 
     <test-element id="e1"></test-element>
@@ -40,37 +39,34 @@
 
     <h4>Test properties</h4>
 
-    <button on-click="changeContactObject">Change contact</button>
-    <button on-click="changeContactDetailsObject">Change contact.details</button>
-    <button on-click="changeEmail">Change contact.details.email</button>
-    <button on-click="changeContactDetailsToNull">Set contact.details to null</button>
+    <button onclick="changeContactObject()">Change contact</button>
+    <button onclick="changeContactDetailsObject()">Change contact.details</button>
+    <button onclick="changeEmail()">Change contact.details.email</button>
+    <button onclick="changeContactDetailsToNull()">Set contact.details to null</button>
 
     <h4>Test collections</h4>
 
     <input type="number" id="collectionEntryToAdd" placeholder="Index of new address">
-    <button on-click="addAddress">Add address</button>
+    <button onclick="addAddress()">Add address</button>
 
     <input type="number" id="collectionEntryToRemove" placeholder="Index of address to remove">
-    <button on-click="removeAddress">Remove address</button>
+    <button onclick="removeAddress()">Remove address</button>
 
-    <button on-click="resetCollection">Reset addresses</button>
+    <button onclick="resetCollection()">Reset addresses</button>
 
     <h4>Test memory</h4>
 
-    <button on-click="memoryObjectTest">Memory test (change contact)</button>
-    <button on-click="memoryElementTest">Memory test (change element)</button>
-
-  </template>
+    <button onclick="memoryObjectTest()">Memory test (change contact)</button>
+    <button onclick="memoryElementTest()">Memory test (change element)</button>
 
 
 
   <script>
 
-    var scope = document.querySelector('template[is="dom-bind"]');
     var models = {};
 
     // Helper functions for demo
-    scope._generateAddress = function() {
+    window._generateAddress = function() {
       var random = new Date().getMilliseconds();
 
       return {
@@ -79,7 +75,7 @@
       };
     };
 
-    scope._generateContact = function() {
+    window._generateContact = function() {
       var random = new Date().getMilliseconds();
       var contact = {
         firstname: 'First' + random,
@@ -96,7 +92,7 @@
       return contact;
     };
 
-    scope.changeContactObject = function() {
+    window.changeContactObject = function() {
       var selected = document.querySelector('#elementSelect').value;
       var element = document.querySelector('#' + selected);
 
@@ -105,7 +101,7 @@
       element.contact = models[selected];
     };
 
-    scope.changeContactDetailsObject = function() {
+    window.changeContactDetailsObject = function() {
       var random = new Date().getMilliseconds();
       var selected = document.querySelector('#elementSelect').value;
 
@@ -114,35 +110,35 @@
       };
     };
 
-    scope.changeEmail = function() {
+    window.changeEmail = function() {
       var random = new Date().getMilliseconds();
       var selected = document.querySelector('#elementSelect').value;
 
       models[selected].details.email = 'email' + random;
     };
 
-    scope.changeContactDetailsToNull = function() {
+    window.changeContactDetailsToNull = function() {
       var random = new Date().getMilliseconds();
       var selected = document.querySelector('#elementSelect').value;
 
       models[selected].details = null;
     };
 
-    scope.addAddress = function() {
-      var index = parseInt(this.$.collectionEntryToAdd.value, 10);
+    window.addAddress = function() {
+      var index = parseInt(document.querySelector('#collectionEntryToAdd').value, 10);
       var selected = document.querySelector('#elementSelect').value;
 
       models[selected].details.addresses.splice(index, 0, this._generateAddress());
     };
 
-    scope.removeAddress = function() {
-      var index = parseInt(this.$.collectionEntryToRemove.value, 10);
+    window.removeAddress = function() {
+      var index = parseInt(document.querySelector('#collectionEntryToRemove'), 10);
       var selected = document.querySelector('#elementSelect').value;
 
       models[selected].details.addresses.splice(index, 1);
     };
 
-    scope.memoryObjectTest = function(counter) {
+    window.memoryObjectTest = function(counter) {
       this.changeContactObject();
 
       counter = (isNaN(counter))? 0 : counter;
@@ -154,7 +150,7 @@
       }
     };
 
-    scope.memoryElementTest = function(counter) {
+    window.memoryElementTest = function(counter) {
       var selected = document.querySelector('#elementSelect').value;
       var element = document.querySelector('#' + selected);
       var parent = element.parentNode;
@@ -178,9 +174,6 @@
     };
 
   </script>
-
-</dom-module>
-
 
 
 

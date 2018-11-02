@@ -76,16 +76,16 @@ how they are changed:
        */
       attached: function() {
         for (var property in this.properties) {
-          var propertyInfo = this.getPropertyInfo(property);
+          var propertyInfo = this.properties[property];
 
           if (Array.isArray(propertyInfo.boundProperties)) {
 
             propertyInfo.boundProperties.forEach(function(subPath){
               var path =  property + '.' + subPath;
 
-              this._bindingDebug('adding path observer for ', path, this.__data__);
+              this._bindingDebug('adding path observer for ', path, this.__data);
 
-              var observer = new PathObserver(this, '__data__.' + path);
+              var observer = new PathObserver(this, '__data.' + path);
               observer.open(this._boundPathChanged.bind(this, path));
 
               this.__boundPathObservers.push(observer);

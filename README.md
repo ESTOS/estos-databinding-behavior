@@ -4,7 +4,7 @@ Synchronizes changes in POJOs to Polymer properties. The databinding is comparab
 
 ## Usage
 
-With Polymer 1.0 there isn't any implicit data binding anymore and you have to use  
+Since Polymer 1.0 there isn't any implicit data binding anymore and you have to use  
 `Polymer.set`, `Polymer.push`, etc. to propagate changes in your model to the GUI.
 
 If you are using a third party library or want to keep your code separated from your
@@ -66,5 +66,4 @@ in `dom-repeat`.
 ## TODO
 
 * The dirty-checking should be optional and configurable
-* Test for circular events if the GUI is setting a value    
 

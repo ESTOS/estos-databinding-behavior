@@ -9,20 +9,18 @@
 
   <title>estos-databinding Demo</title>
 
-  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
 
-  <link rel="import" href="../../polymer/polymer.html">
-  <link rel="import" href="test-element.html">
+  <script type="module">
+    import '@polymer/polymer/polymer-legacy.js';
+    import './test-element.js';
+  </script>
 
 </head>
-
 <body>
-
-
 
     <test-element id="e1"></test-element>
     <test-element id="e2"></test-element>
-
 
     <!-- Test buttons -->
 
@@ -58,8 +56,6 @@
 
     <button onclick="memoryObjectTest()">Memory test (change contact)</button>
     <button onclick="memoryElementTest()">Memory test (change element)</button>
-
-
 
   <script>
 
@@ -174,8 +170,6 @@
     };
 
   </script>
-
-
 
 </body>
 </html>
